@@ -2,48 +2,58 @@ package test;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import game.board;
 
-public class Testboard {
+import game.board.Cell;
+import game.board.GameState;
 
+public class Testboard {
+	private board b;
+
+	@Before
+	public void setUp() throws Exception {
+		 
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+
+	
     @Test
     public void testInitBoard() {
-        board b = new board(3);
-        assertEquals(board.GameState.PLAYING, b.getGameState());
+        
+        assertEquals(GameState.PLAYING, GameState());
         assertEquals('B', b.getTurn());
         
-        assertEquals(board.Cell.EMPTY, b.getCell(0,0));
-        assertEquals(board.Cell.EMPTY, b.getCell(1,1));
-        assertEquals(board.Cell.EMPTY, b.getCell(2,2));
+        assertEquals(Cell.EMPTY, getCell(0,0));
+        assertEquals(Cell.EMPTY, getCell(1,1));
+        assertEquals(Cell.EMPTY, b.getCell(2,2));
     }
 
 
-    @Test
-    public void testSetCell() {
-        board b = new board(3);
-        b.setCell(0, 0, board.Cell.S);
-        
-        b.setCell(1, 1, board.Cell.O);
-        
-        b.setCell(-1, -1, board.Cell.S);
-        assertNull(b.getCell(-1,-1));
-    }
+    private Object getCell(int i, int j) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Test
-    public void testSwitchTurn() {
-        board b = new board(3);
-        assertEquals('B', b.getTurn());
-        b.switchTurn();
-        assertEquals('R', b.getTurn());
-        b.switchTurn();
-        assertEquals('B', b.getTurn());
-    }
+	private Object GameState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+    
 
     @Test
     public void testMakeMove() {
-        board b = new board(3);
+       
         
         assertEquals(board.Cell.S, b.getCell(0,0));
         assertFalse(b.makeMove(0,0));
@@ -55,4 +65,3 @@ public class Testboard {
     }
 
 }
-

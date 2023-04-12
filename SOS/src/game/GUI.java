@@ -23,13 +23,16 @@ public class GUI extends JFrame implements ActionListener {
     public static JRadioButton redO;		
     public static JRadioButton redS;							
     public static JRadioButton blueS;
+    
 	
-	private board game;
+	public board game;
     private GameBoardCanvas gameBoardCanvas; 					
-    private JLabel gameStatusBar;								
-    private JTextField boardSize;
+    public JLabel gameStatusBar;								
+    public JTextField boardSize;
     private Graphics graph; 									
-    private ButtonGroup gameMode; 
+    public ButtonGroup gameMode; 
+    	
+            
     public GUI() {
     	this(new simple(3));
     }
@@ -85,11 +88,11 @@ public class GUI extends JFrame implements ActionListener {
         bpLabel.setBounds(20, 100, 150, 25);
         this.add(bpLabel);
 		
-		
-	   
+	    
+       
 	    
         new ButtonGroup();
-       
+        
         
 	    
         blueS = new JRadioButton("S");
@@ -116,6 +119,8 @@ public class GUI extends JFrame implements ActionListener {
         rpLabel.setBounds(520, 100, 150, 25);
         this.add(rpLabel);
 	    
+        
+        
 	    
         new ButtonGroup();
         
@@ -139,6 +144,8 @@ public class GUI extends JFrame implements ActionListener {
         redPlayer.add(redS);
         redPlayer.add(redO);
         
+		
+        
         JLabel ctLabel = new JLabel("Current Turn:");
         ctLabel.setFont(new Font("Helvetica", Font.PLAIN, 16));
         ctLabel.setBounds(185, 381, 101, 13);
@@ -151,6 +158,7 @@ public class GUI extends JFrame implements ActionListener {
 		newGame.addActionListener(this);
 		this.add(newGame);
         
+		
 
         setContentPane();
         this.setVisible(true);
@@ -171,7 +179,7 @@ public class GUI extends JFrame implements ActionListener {
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) { 
     	if (e.getActionCommand().equals("New Game")) {
     		int size = Integer.parseInt(boardSize.getText());
             String mode = gameMode.getSelection().getActionCommand();
@@ -192,7 +200,7 @@ public class GUI extends JFrame implements ActionListener {
             else {
                 JOptionPane.showMessageDialog(boardSize, "Sorry, your board size should be from 3-10", "Invalid game size", JOptionPane.ERROR_MESSAGE);
             }
-    	}
+        }
     }
 
     public boolean validSize(int size) {
@@ -204,12 +212,18 @@ public class GUI extends JFrame implements ActionListener {
         GameBoardCanvas() {
             addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    int rowSelected = e.getY() / CELL_SIZE;
+                    
+                	int rowSelected = e.getY() / CELL_SIZE;
                     int colSelected = e.getX() / CELL_SIZE;
-                    if (game.getGameState() == GameState.PLAYING) {
-                    	game.makeMove(rowSelected, colSelected);
-                    }
-                    else {
+                    if (game.getGameState() == GameState.PLAYING) {                       
+                    	if (game.getTurn()=='B') {
+                    			game.makeMove(rowSelected, colSelected);
+                    	}	
+                    	else if (game.getTurn()=='R') {
+            					game.makeMove(rowSelected, colSelected);
+                    	}
+                        game.updateState();
+                    } else {
                         game.initBoard();
                     }
                     repaint();
@@ -225,7 +239,7 @@ public class GUI extends JFrame implements ActionListener {
             drawBoard(g);
             graph = g; 
             printStatusBar();
-            
+            drawWinLine(g);
         }
 
         private void drawGridLines(Graphics g) {
@@ -259,7 +273,28 @@ public class GUI extends JFrame implements ActionListener {
             }
         }
         
-        } 
+        private void drawWinLine(Graphics g) {
+            Graphics2D line = (Graphics2D) g;
+			line.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            line.setColor(Color.BLUE);
+            drawWinningPatterns(g, game.blueWinningPatterns);
+
+            line.setColor(Color.RED);
+            drawWinningPatterns(g, game.redWinningPatterns);
+		}
+
+        private void drawWinningPatterns(Graphics g, java.util.List<int[]> winningPatterns) {
+            int x1, y1, x2, y2;
+            for (int[] winningPattern : winningPatterns) {
+                y1 = winningPattern[0] * CELL_SIZE + CELL_SIZE/2;
+                x1 = winningPattern[1] * CELL_SIZE + CELL_SIZE/2;
+                y2 = winningPattern[2] * CELL_SIZE + CELL_SIZE/2;
+                x2 = winningPattern[3] * CELL_SIZE + CELL_SIZE/2;
+                g.drawLine(x1, y1, x2, y2);
+            }
+        }
+    
         private void printStatusBar() {
             if (game.getGameState() == GameState.PLAYING) {
                 gameStatusBar.setForeground(Color.BLACK);
@@ -268,9 +303,18 @@ public class GUI extends JFrame implements ActionListener {
                 } else {
                     gameStatusBar.setText("Red Player's Turn");
                 }
-            } 
+            }else if (game.getGameState() == GameState.DRAW) {
+				gameStatusBar.setForeground(Color.GREEN);
+				gameStatusBar.setText("It's a Draw!");
+			} else if (game.getGameState() == GameState.B_WON) {
+				gameStatusBar.setForeground(Color.BLUE);
+				gameStatusBar.setText("Blue Won!");
+			} else if (game.getGameState() == GameState.R_WON) {
+				gameStatusBar.setForeground(Color.RED);
+				gameStatusBar.setText("Red Won!");
+			}
         }
-   
+   }
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
