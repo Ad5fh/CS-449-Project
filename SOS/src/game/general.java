@@ -20,3 +20,4 @@ public class general extends board{
 			currentGameState = GameState.DRAW;
 	}
 }
+

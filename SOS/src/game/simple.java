@@ -1,4 +1,7 @@
+
+
 package game;
+
 
 
 public class simple extends board {
@@ -19,6 +22,4 @@ public class simple extends board {
 			currentGameState = GameState.PLAYING;
 		else currentGameState = GameState.DRAW;
 	}
-
-	
 }

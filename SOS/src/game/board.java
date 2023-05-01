@@ -2,7 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 public abstract class board {
     
@@ -13,12 +13,12 @@ public abstract class board {
     public final List<int[]> redWinningPatterns;
     public final List<int[]> blueWinningPatterns;
 
-    public Cell[][] grid;
-    public char turn;
+    protected Cell[][] grid;
+    protected char turn;
     public int totalMoves;
 	public int bluePoints;
 	public int redPoints;
-    
+    Random rng = new Random();
 
     public board(int size) {
     	this.size = size;
@@ -71,6 +71,12 @@ public abstract class board {
         return currentGameState;
     }
     
+    public void makeAiMove(){
+		int row = rng.nextInt(grid.length);
+		int col = rng.nextInt(grid.length);
+		if (!makeMove(row,col))
+			makeAiMove();
+    }
     
     public boolean makeMove(int row, int column) {
         Cell cell = getCell(row, column);

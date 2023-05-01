@@ -23,15 +23,17 @@ public class GUI extends JFrame implements ActionListener {
     public static JRadioButton redO;		
     public static JRadioButton redS;							
     public static JRadioButton blueS;
-    
+    public static JRadioButton computerBlue;
+    public static JRadioButton computerRed;
 	
-	public board game;
+	private board game;
     private GameBoardCanvas gameBoardCanvas; 					
-    public JLabel gameStatusBar;								
-    public JTextField boardSize;
+    private JLabel gameStatusBar;								
+    private JTextField boardSize;
     private Graphics graph; 									
-    public ButtonGroup gameMode; 
-    	
+    private ButtonGroup gameMode; 
+    private ButtonGroup activePlayerBlue;
+    private ButtonGroup activePlayerRed;	
             
     public GUI() {
     	this(new simple(3));
@@ -88,15 +90,28 @@ public class GUI extends JFrame implements ActionListener {
         bpLabel.setBounds(20, 100, 150, 25);
         this.add(bpLabel);
 		
+		JRadioButton humanBlue = new JRadioButton("Human");
+	    humanBlue.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    humanBlue.setBounds(20, 140, 100, 25);
+	    humanBlue.setFocusable(false);
+	    humanBlue.setSelected(true);
+	    humanBlue.setActionCommand("Human");
+	    this.add(humanBlue);
 	    
-       
+        computerBlue = new JRadioButton("Computer");
+	    computerBlue.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    computerBlue.setBounds(20, 220, 100, 25);
+	    computerBlue.setFocusable(false);
+	    computerBlue.setSelected(false);
+	    computerBlue.setActionCommand("ComputerBlue");
+	    this.add(computerBlue);
 	    
-        new ButtonGroup();
-        
-        
+        activePlayerBlue = new ButtonGroup();
+        activePlayerBlue.add(humanBlue);
+        activePlayerBlue.add(computerBlue);
 	    
         blueS = new JRadioButton("S");
-        blueS.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        blueS.setFont(new Font("Tahoma", Font.PLAIN, 16));
         blueS.setBounds(35, 170, 50, 25);
         blueS.setFocusable(false);
         blueS.addActionListener(this);
@@ -104,7 +119,7 @@ public class GUI extends JFrame implements ActionListener {
         this.add(blueS);
 
         blueO = new JRadioButton("O");
-        blueO.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        blueO.setFont(new Font("Tahoma", Font.PLAIN, 16));
         blueO.setBounds(35, 190, 50, 25);
         blueO.setFocusable(false);
         blueO.addActionListener(this);
@@ -119,14 +134,27 @@ public class GUI extends JFrame implements ActionListener {
         rpLabel.setBounds(520, 100, 150, 25);
         this.add(rpLabel);
 	    
-        
-        
+        JRadioButton humanRed = new JRadioButton("Human");
+	    humanRed.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    humanRed.setBounds(505, 140, 100, 25);
+	    humanRed.setFocusable(false);
+	    humanRed.setSelected(true);
+	    humanRed.setActionCommand("Human");
+	    this.add(humanRed);
 	    
-        new ButtonGroup();
-        
+        computerRed = new JRadioButton("Computer");
+	    computerRed.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    computerRed.setBounds(505, 220, 100, 25);
+	    computerRed.setFocusable(false);
+	    computerRed.setActionCommand("ComputerRed");
+	    this.add(computerRed);
+	    
+        activePlayerRed = new ButtonGroup();
+        activePlayerRed.add(humanRed);
+        activePlayerRed.add(computerRed);
 	     
         redS = new JRadioButton("S");
-        redS.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        redS.setFont(new Font("Tahoma", Font.PLAIN, 16));
         redS.setBounds(520, 170, 150, 25);
         redS.setFocusable(false);
         redS.addActionListener(this);
@@ -134,7 +162,7 @@ public class GUI extends JFrame implements ActionListener {
         this.add(redS);
 
         redO = new JRadioButton("O");
-        redO.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        redO.setFont(new Font("Tahoma", Font.PLAIN, 16));
         redO.setBounds(520, 190, 150, 25);
         redO.setFocusable(false);
         redO.addActionListener(this);
@@ -144,10 +172,13 @@ public class GUI extends JFrame implements ActionListener {
         redPlayer.add(redS);
         redPlayer.add(redO);
         
-		
+		JCheckBox record = new JCheckBox("Record Game");
+		record.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		record.setBounds(18, 381, 129, 21);
+		this.add(record);
         
         JLabel ctLabel = new JLabel("Current Turn:");
-        ctLabel.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        ctLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
         ctLabel.setBounds(185, 381, 101, 13);
         this.add(ctLabel);
         
@@ -158,7 +189,10 @@ public class GUI extends JFrame implements ActionListener {
 		newGame.addActionListener(this);
 		this.add(newGame);
         
-		
+		JButton replay = new JButton("Replay");
+		replay.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		replay.setBounds(501, 335, 112, 26);
+		this.add(replay);
 
         setContentPane();
         this.setVisible(true);
@@ -185,11 +219,11 @@ public class GUI extends JFrame implements ActionListener {
             String mode = gameMode.getSelection().getActionCommand();
             if (validSize(size)) {
                 if(mode.equals("General Game")) {
-                    JOptionPane.showMessageDialog(null, "You choose to play a general game");
+                    JOptionPane.showMessageDialog(null, "You are playing a general game");
                     game = new general(size);
                 }
                 else if (mode.equals("Simple Game")) {
-                    JOptionPane.showMessageDialog(null, "You choose to play a simple game");
+                    JOptionPane.showMessageDialog(null, "You are playing a simple game");
                     game = new simple(size);                    	
                 }                          
                 CELL_SIZE = 300 / game.size;
@@ -198,7 +232,7 @@ public class GUI extends JFrame implements ActionListener {
                 gameBoardCanvas.repaint();
             }
             else {
-                JOptionPane.showMessageDialog(boardSize, "Sorry, your board size should be from 3-10", "Invalid game size", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(boardSize, "Please choose a valid size from 3-10", "Invalid game size", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -212,15 +246,23 @@ public class GUI extends JFrame implements ActionListener {
         GameBoardCanvas() {
             addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    
+                    String blue = activePlayerBlue.getSelection().getActionCommand();
+                    String red = activePlayerRed.getSelection().getActionCommand();
+
                 	int rowSelected = e.getY() / CELL_SIZE;
                     int colSelected = e.getX() / CELL_SIZE;
                     if (game.getGameState() == GameState.PLAYING) {                       
                     	if (game.getTurn()=='B') {
+                    		if (blue.equals("Human"))
                     			game.makeMove(rowSelected, colSelected);
-                    	}	
+                    		else if (blue.equals("ComputerBlue"))
+            					game.makeAiMove();
+                    		}
                     	else if (game.getTurn()=='R') {
+                    		if (red.equals("Human"))
             					game.makeMove(rowSelected, colSelected);
+                    		else if (red.equals("ComputerRed"))
+            					game.makeAiMove();
                     	}
                         game.updateState();
                     } else {
